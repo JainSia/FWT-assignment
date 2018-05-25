@@ -4,15 +4,13 @@ import java.util.List;
 
 public class Screen {
 
-	private long id;
+	private int id;
 	private String screenName;
 	private Movie movie;
 	private List<Row> rows;
 	
-	public Screen() {
-	}
 	
-	public Screen(long id, String screenName) {
+	public Screen(int id, String screenName) {
 		this.id = id;
 		this.screenName = screenName;
 	}
@@ -20,7 +18,7 @@ public class Screen {
 	public long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getScreenName() {
@@ -41,4 +39,10 @@ public class Screen {
 	public void setRows(List<Row> rows) {
 		this.rows = rows;
 	}
+
+	@Override
+	public String toString() {
+		return "Screen [id=" + id + ", screenName=" + screenName + ", movie=" + movie + ", rows=" + rows + "]";
+	}
+	
 }

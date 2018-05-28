@@ -16,6 +16,7 @@ import com.yash.moviebookingsystem.dao.MovieDAO;
 import com.yash.moviebookingsystem.domain.Movie;
 import com.yash.moviebookingsystem.enumeration.Status;
 import com.yash.moviebookingsystem.exception.EmptyFieldException;
+import com.yash.moviebookingsystem.exception.EmptyObjectException;
 import com.yash.moviebookingsystem.service.MovieService;
 
 public class MovieServiceImplTest {
@@ -34,28 +35,28 @@ public class MovieServiceImplTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void addMovie_MovieNullObjectGiven_throwNullPointerException() throws EmptyFieldException {
+	public void addMovie_MovieNullObjectGiven_throwNullPointerException() throws EmptyFieldException, EmptyObjectException {
 
 		Movie movie = null;
 		movieService.add(movie, screenName);
 	}
 
 	@Test(expected = EmptyFieldException.class)
-	public void addMovie_EmptyMovieFieldsGiven_throwEmptyFieldException() throws EmptyFieldException {
+	public void addMovie_EmptyMovieFieldsGiven_throwEmptyFieldException() throws EmptyFieldException, EmptyObjectException {
 
 		Movie movie = new Movie(1, "Razzi", Time.valueOf("02:00:00"), "", actors, Status.ONSCREEN);
 		movieService.add(movie, screenName);
 	}
 
 	@Test(expected = EmptyFieldException.class)
-	public void addMovie_EmptyScreenNameGiven_throwEmptyFieldException() throws EmptyFieldException {
+	public void addMovie_EmptyScreenNameGiven_throwEmptyFieldException() throws EmptyFieldException, EmptyObjectException {
 		String screenName = "";
 		Movie movie = new Movie(1, "Raazi", Time.valueOf("02:00:00"), "SRK", actors, Status.ONSCREEN);
 		movieService.add(movie, screenName);
 	}
 
 	@Test
-	public void addMovie_MovieObjectGiven_shouldReturnOne() throws EmptyFieldException {
+	public void addMovie_MovieObjectGiven_shouldReturnOne() throws EmptyFieldException, EmptyObjectException {
 		Movie movie = new Movie(1, "Razzi", Time.valueOf("02:00:00"), "SRK", actors, Status.ONSCREEN);
 		when(movieDAO.insert(movie, screenName)).thenReturn(1);
 		int rowAffected = movieService.add(movie, screenName);

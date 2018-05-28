@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.yash.moviebookingsystem.dao.ScreenDAO;
 import com.yash.moviebookingsystem.domain.Screen;
 import com.yash.moviebookingsystem.exception.EmptyFieldException;
+import com.yash.moviebookingsystem.exception.EmptyObjectException;
 import com.yash.moviebookingsystem.exception.ScreenAlreadyExistException;
 import com.yash.moviebookingsystem.service.ScreenService;
 
@@ -34,9 +35,10 @@ public class ScreenServiceImpl implements ScreenService {
 	 * @return rowAffected is the integer value return 1 when screen is added
 	 *         otherwise 0
 	 * @throws IOException 
+	 * @throws EmptyObjectException 
 	 */
 	@Override
-	public int add(Screen screen) throws EmptyFieldException, ScreenAlreadyExistException, IOException {
+	public int add(Screen screen) throws EmptyFieldException, ScreenAlreadyExistException, EmptyObjectException, IOException {
 		int rowAffected = 0;
 		isScreenNull(screen);
 		isScreenFieldEmpty(screen);

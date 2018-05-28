@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.yash.moviebookingsystem.dao.MovieDAO;
 import com.yash.moviebookingsystem.domain.Movie;
 import com.yash.moviebookingsystem.exception.EmptyFieldException;
+import com.yash.moviebookingsystem.exception.EmptyObjectException;
 import com.yash.moviebookingsystem.service.MovieService;
 
 /**
@@ -30,9 +31,10 @@ public class MovieServiceImpl implements MovieService {
 	 * @param movie
 	 *            is the movie object that has to be added
 	 * @return rowAffected is the intger value 1 if movie is added otherwise 0
+	 * @throws EmptyObjectException 
 	 */
 	@Override
-	public int add(Movie movie, String screenName) throws EmptyFieldException {
+	public int add(Movie movie, String screenName) throws EmptyFieldException, EmptyObjectException {
 		if (movie == null) {
 			logger.error("Movie cannot be null");
 			throw new NullPointerException("Movie cannot be null");

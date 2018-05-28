@@ -9,6 +9,12 @@ public class Row {
 	public long getId() {
 		return id;
 	}
+	public Row(long id, Seat seat, Category category) {
+		super();
+		this.id = id;
+		this.seat = seat;
+		this.category = category;
+	}
 	public void setId(long id) {
 		this.id = id;
 	}

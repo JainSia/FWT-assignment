@@ -8,6 +8,7 @@ import com.yash.moviebookingsystem.enumeration.Status;
 public class Movie {
 
 	private long id;
+	private String screenName;
 	private String movieName;
 	private Time duration;
 	private String production;
@@ -52,6 +53,12 @@ public class Movie {
 		return actors;
 	}
 	
+	public String getScreenName() {
+		return screenName;
+	}
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+	}
 	public void setActors(List<String> actors) {
 		this.actors = actors;
 	}

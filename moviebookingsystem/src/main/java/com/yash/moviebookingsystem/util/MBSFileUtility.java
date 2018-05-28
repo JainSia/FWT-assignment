@@ -6,52 +6,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.yash.moviebookingsystem.exception.EmptyFileException;
+import org.apache.log4j.Logger;
+
+import com.yash.moviebookingsystem.exception.FileNameNotGivenException;
 import com.yash.moviebookingsystem.exception.FileNotExistException;
+import com.yash.moviebookingsystem.exception.JsonTextNotGivenException;
 
 public class MBSFileUtility {
 
-	private File file;
+	private Logger logger = Logger.getLogger("FileUtil.class");
 
-	/**
-	 * this will read the content of file
-	 * 
-	 * @param fileName
-	 *            is the name of file whom content you want to read
-	 */
-	public void readFile(String fileName) {
-		file = getFile(fileName);
-		String contentOfFile;
-		BufferedReader bufferedReader;
-		try {
-			bufferedReader = new BufferedReader(new FileReader(file));
-			contentOfFile = bufferedReader.readLine();
-			isFileEmpty(bufferedReader, contentOfFile);
-			printContentOfFile(bufferedReader, contentOfFile);
-			bufferedReader.close();
-		} catch (Exception exception) {
-			throw new EmptyFileException("File is Empty");
-		}
-	}
-
-	/**
-	 * this will create the file according to file name
-	 * 
-	 * @param fileName
-	 *            is the name of file you want to create
-	 * @return file in which data will be stored
-	 * @throws IOException
-	 */
-	public File createFile(String fileName) throws IOException {
-		File file = new File(fileName);
-		if (!file.exists()) {
-			System.out.println(file.exists());
-			file.createNewFile();
-		}
-		return file;
-	}
-
+	
+	
 	/**
 	 * this method will write the data provided in file
 	 * 
@@ -59,77 +29,96 @@ public class MBSFileUtility {
 	 *            is the path of file in which you want to write the data
 	 * @param data
 	 *            is what you want to be written in file
-	 * @throws IOException
+	 * @throws JsonTextNotGivenException
+	 * @throws FileNameNotGivenException
 	 */
-	public void writeContentInFile(String filepath, String data) throws IOException {
-
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filepath, true));
-		bufferedWriter.write(data);
-		bufferedWriter.newLine();
-		bufferedWriter.close();
+	public boolean writeInFile(String fileName, String jsonText) throws JsonTextNotGivenException, FileNameNotGivenException {
+		logger.info("Writing in file : "+fileName);
+		if(jsonText == null || jsonText.isEmpty())
+			throw new JsonTextNotGivenException("Give Json text to write in the file");
+		if(fileName == null || fileName.isEmpty())
+			throw new FileNameNotGivenException("Give a file name");
+		try {
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter("src/main/resources/"+fileName+".json",true));
+			fileWriter.append(jsonText);
+			fileWriter.newLine();
+			fileWriter.close();
+		} catch (IOException e) {
+			logger.error("Error in writing file");
+		}
+		
+		return true;
 	}
-
+	
 	/**
-	 * this method which will help in getting the file from resources folder
+	 * this will read the file whose name is given
+	 * 
+	 * @param fileName name of file
+	 * @param type is type of object that will save in list
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> readFile(String fileName, Type type) {
+		logger.info("Reading into file :"+fileName);
+		List<T> objects = new ArrayList<T>();
+		File fileToRead = getFile(fileName);
+		try {
+			BufferedReader fileReader = new BufferedReader(new FileReader(fileToRead));
+			
+			String currentline;
+			
+			while ((currentline = fileReader.readLine()) != null) {
+				objects.add((T) JSONUtil.convertJSONToObject(currentline, type));
+			}
+			
+			fileReader.close();
+			
+		} catch (Exception e) {
+			logger.error("Error in reading file");
+		}
+		return objects;
+	}
+	
+	/**
 	 * 
 	 * @param fileName
-	 *            is the name of file you want.
-	 * @return the file or will throw an exception
+	 * @return
 	 */
-	public File getFile(String fileName) {
+	private File getFile(String fileName){
+		logger.info("searching file :"+fileName);
 		ClassLoader classLoader = getClass().getClassLoader();
 		try {
-			file = new File(classLoader.getResource(fileName).getFile());
+			File file = new File(classLoader.getResource(fileName).getFile());
 			return file;
 		} catch (Exception exception) {
 			throw new FileNotExistException("File does not exist");
 		}
-	}
+	  }
 
 	/**
-	 * this will print the content of file
+	 * this will help to read file that contains menu
 	 * 
-	 * @param bufferedReader
-	 *            will going to point the file which you wan to read
-	 * @param contentOfFile
-	 *            is the content you wan to print
-	 * @throws IOException
+	 * @param fileName
 	 */
-	private void printContentOfFile(BufferedReader bufferedReader, String contentOfFile) throws IOException {
-		while (contentOfFile != null) {
-			System.out.println(contentOfFile);
-			contentOfFile = bufferedReader.readLine();
-		}
-	}
-
-	/**
-	 * it will check the file that it is empty or not
-	 * 
-	 * @param bufferedReader
-	 *            will going to point the file which you wan to check
-	 * @param contentOfFile
-	 *            is the content that you want to check
-	 * @throws IOException
-	 */
-	private void isFileEmpty(BufferedReader bufferedReader, String contentOfFile) throws IOException {
-		if (contentOfFile.isEmpty()) {
-			bufferedReader.close();
-			throw new EmptyFileException("File is Empty");
-		}
-	}
-
-	public String readFileReturnString(String fileName) {
-		file = getFile(fileName);
-		String contentOfFile;
-		BufferedReader bufferedReader;
+	public void readMenu(String fileName) {
+		logger.info("Reading menu :"+fileName);
+		File fileToRead = getFile(fileName);
 		try {
-			bufferedReader = new BufferedReader(new FileReader(file));
-			contentOfFile = bufferedReader.readLine();
-			isFileEmpty(bufferedReader, contentOfFile);
-			bufferedReader.close();
-		} catch (Exception exception) {
-			throw new EmptyFileException("File is Empty");
+			BufferedReader fileReader = new BufferedReader(new FileReader(fileToRead));
+			
+			String currentline;
+			
+			while ((currentline = fileReader.readLine()) != null) {
+				System.out.println(currentline);
+			}
+			
+			fileReader.close();
+			
+		} catch (Exception e) {
+			logger.error("Error in reading menu file");
 		}
-		return contentOfFile;
 	}
+
+
+	
 }

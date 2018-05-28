@@ -1,12 +1,13 @@
 package com.yash.moviebookingsystem.util;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.yash.moviebookingsystem.domain.Screen;
+import com.yash.moviebookingsystem.exception.EmptyObjectException;
+import com.yash.moviebookingsystem.exception.JsonTextNotGivenException;
+import com.yash.moviebookingsystem.exception.JsonTypeNotGivenException;
 
 /**
  * this class will convert Object to JSON and JSON string to Object.
@@ -16,40 +17,72 @@ import com.yash.moviebookingsystem.domain.Screen;
  */
 public class JSONUtil {
 
-	private static List<Screen> listOfScreenObject = new ArrayList<>();
-	private static List<Screen> listOfJsonToString = new ArrayList<>();
-	private static Gson gson = new Gson();
-	private static Type type = new TypeToken<List<Screen>>() {
-	}.getType();
-	private static String json;
+	private static Logger logger = Logger.getLogger("JSONUtil.class");
 
 	/**
-	 * this will take the screen object and convert it into json type screen
+	 * this method will convert object into json
 	 * 
-	 * @param screen
-	 *            object
-	 * @return JSON form of string
+	 * @param object
+	 * @return
+	 * @throws EmptyObjectException
 	 */
-	public static String convertObjectToJSONString(Screen screen) {
-		listOfScreenObject.add(screen);
-		json = gson.toJson(listOfScreenObject, type);
-		return json;
+	public static String convertObjectToJSON(Object object) throws EmptyObjectException {
+		logger.info("Converting  Object To JSON");
+		isObjectGiven(object);
+		Gson gson = new Gson();
+		return gson.toJson(object);
 	}
 
 	/**
-	 * this will convert JSON string to object
+	 * this will check the object is null or not
 	 * 
+	 * @param object
+	 * @throws EmptyObjectException
 	 */
-	public static List<Screen> ConvertjsonToObject(String data) {
+	private static void isObjectGiven(Object object) throws EmptyObjectException {
+		if (object == null)
+			throw new EmptyObjectException("An object should be given");
+	}
+
+	/**
+	 * this will convert the json object to compatible type
+	 * 
+	 * @param jsonText
+	 * @param typeOfObject
+	 * @return
+	 * @throws JsonTextNotGivenException
+	 * @throws JsonTypeNotGivenException
+	 */
+	public static <T> T convertJSONToObject(String jsonText, Type typeOfObject)
+			throws JsonTextNotGivenException, JsonTypeNotGivenException {
+		logger.info("converting JSON To Object");
+		isJSONTextGiven(jsonText);
+		isJSONTypeOfObjectGiven(typeOfObject);
 		Gson gson = new Gson();
-		Type type = new TypeToken<List<Screen>>() {
-		}.getType();
-		json = gson.toJson(data, type);
-		List<Screen> fromJson = gson.fromJson(json, type);
-		for (Screen screen : fromJson) {
-			System.out.println(screen);
-		}
-		return fromJson;
+		return gson.fromJson(jsonText, typeOfObject);
+	}
+
+	/**
+	 * this is the helper method that will check the type of given object
+	 * 
+	 * @param typeOfObject
+	 * @throws JsonTypeNotGivenException
+	 */
+	private static void isJSONTypeOfObjectGiven(Type typeOfObject) throws JsonTypeNotGivenException {
+		if (typeOfObject == null)
+			throw new JsonTypeNotGivenException("Type of object should be specified");
+	}
+
+	/**
+	 * this is the helper method that will check the type of given object
+	 * 
+	 * @param jsonText
+	 * @throws JsonTextNotGivenException
+	 */
+
+	private static void isJSONTextGiven(String jsonText) throws JsonTextNotGivenException {
+		if (jsonText == null || jsonText.isEmpty())
+			throw new JsonTextNotGivenException("JSOn should be given");
 	}
 
 }

@@ -1,9 +1,18 @@
 package com.yash.moviebookingsystem.domain;
 
+import com.yash.moviebookingsystem.enumeration.Status;
+
 public class Seat {
 	private int id;
-	private boolean status;
+	private Status status;
 	private Ticket ticket;
+	
+	
+	public Seat(int id, Status status) {
+		super();
+		this.id = id;
+		this.status = status;
+	}
 	
 	public int getId() {
 		return id;
@@ -11,12 +20,15 @@ public class Seat {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public boolean isStatus() {
+	
+	public Status getStatus() {
 		return status;
 	}
-	public void setStatus(boolean status) {
+
+	public void setStatus(Status status) {
 		this.status = status;
 	}
+
 	public Ticket getTicket() {
 		return ticket;
 	}
@@ -26,7 +38,7 @@ public class Seat {
 	@Override
 	public String toString() {
 		return "Seat [id=" + id + ", status=" + status + ", ticket=" + ticket + ", getId()=" + getId() + ", isStatus()="
-				+ isStatus() + ", getTicket()=" + getTicket() + ", getClass()=" + getClass() + ", hashCode()="
+				+ getStatus() + ", getTicket()=" + getTicket() + ", getClass()=" + getClass() + ", hashCode()="
 				+ hashCode() + ", toString()=" + super.toString() + "]";
 	}
 	

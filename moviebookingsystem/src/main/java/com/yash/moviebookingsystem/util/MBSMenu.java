@@ -14,6 +14,7 @@ import com.yash.moviebookingsystem.domain.Movie;
 import com.yash.moviebookingsystem.domain.Screen;
 import com.yash.moviebookingsystem.enumeration.Status;
 import com.yash.moviebookingsystem.exception.EmptyFieldException;
+import com.yash.moviebookingsystem.exception.EmptyObjectException;
 import com.yash.moviebookingsystem.exception.ScreenAlreadyExistException;
 import com.yash.moviebookingsystem.service.MovieService;
 import com.yash.moviebookingsystem.service.ScreenService;
@@ -34,13 +35,14 @@ public class MBSMenu {
 	 * @throws ScreenAlreadyExistException 
 	 * @throws EmptyFieldException 
 	 * @throws IOException 
+	 * @throws EmptyObjectException 
 	 */
-	public void getMenu() throws EmptyFieldException, ScreenAlreadyExistException, IOException {
+	public void getMenu() throws EmptyFieldException, ScreenAlreadyExistException, IOException, EmptyObjectException {
 		scanner = new Scanner(System.in);
 		String choice;
 		int menuChoice;
 		do {
-			mbsFileUtility.readFile("MainMenu.txt");
+			mbsFileUtility.readMenu("MainMenu.txt");
 			menuChoice = scanner.nextInt();
 			switch (menuChoice) {
 			case 1:
@@ -57,10 +59,10 @@ public class MBSMenu {
 			System.out.println("Do you want to continue..?");
 			choice = scanner.next();
 		} while (choice.equalsIgnoreCase("Yes"));
-		scanner.close();
+		
 	}
 
-	private void addMovieToScreen() throws EmptyFieldException {
+	private void addMovieToScreen() throws EmptyFieldException, EmptyObjectException {
 		List<String> listOfActors=new ArrayList<>();
 		System.out.println("Enter Screen on which you want to add movie : ");
 		String screen = scanner.next();
@@ -77,7 +79,8 @@ public class MBSMenu {
 		int number=scanner.nextInt();
 		for(int i=1;i<=number;i++){
 			System.out.println("Enter actors : ");
-			String actor = scanner.nextLine();
+			String actor = scanner.next();
+			scanner.nextLine();
 			listOfActors.add(actor);
 		}
 		System.out.println("Enter duration of Movie(HH:MM:SS) : ");
@@ -87,7 +90,7 @@ public class MBSMenu {
 		movieService.add(movie, screen);
 	}
 
-	private void screenToAdd() throws EmptyFieldException, ScreenAlreadyExistException, IOException {
+	private void screenToAdd() throws EmptyFieldException, ScreenAlreadyExistException, IOException, EmptyObjectException {
 		System.out.println("Enter Screen id : ");
 		int screenId = scanner.nextInt();
 		System.out.println("Enter Screen : ");

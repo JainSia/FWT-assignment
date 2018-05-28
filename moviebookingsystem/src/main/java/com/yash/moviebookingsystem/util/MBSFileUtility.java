@@ -117,4 +117,19 @@ public class MBSFileUtility {
 			throw new EmptyFileException("File is Empty");
 		}
 	}
+
+	public String readFileReturnString(String fileName) {
+		file = getFile(fileName);
+		String contentOfFile;
+		BufferedReader bufferedReader;
+		try {
+			bufferedReader = new BufferedReader(new FileReader(file));
+			contentOfFile = bufferedReader.readLine();
+			isFileEmpty(bufferedReader, contentOfFile);
+			bufferedReader.close();
+		} catch (Exception exception) {
+			throw new EmptyFileException("File is Empty");
+		}
+		return contentOfFile;
+	}
 }

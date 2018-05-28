@@ -40,16 +40,16 @@ public class JSONUtil {
 	 * this will convert JSON string to object
 	 * 
 	 */
-	public static void ConvertjsonToObject() {
+	public static List<Screen> ConvertjsonToObject(String data) {
 		Gson gson = new Gson();
 		Type type = new TypeToken<List<Screen>>() {
 		}.getType();
-		json = gson.toJson(listOfJsonToString, type);
+		json = gson.toJson(data, type);
 		List<Screen> fromJson = gson.fromJson(json, type);
 		for (Screen screen : fromJson) {
 			System.out.println(screen);
 		}
-
+		return fromJson;
 	}
 
 }

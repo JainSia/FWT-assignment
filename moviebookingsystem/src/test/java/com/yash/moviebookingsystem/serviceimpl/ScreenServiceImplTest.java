@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,7 +32,7 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void addScreen_NullObjectGiven_throwObjectNullabitityException()
-			throws EmptyFieldException, ScreenAlreadyExistException {
+			throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		Screen screen = null;
 		screenService.add(screen);
 
@@ -38,7 +40,7 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = EmptyFieldException.class)
 	public void addScreen_EmptyFeildValueGiven_throwEmptyScreenException()
-			throws EmptyFieldException, ScreenAlreadyExistException {
+			throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		Screen screen = new Screen(1, "");
 		screenService.add(screen);
 
@@ -46,7 +48,7 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = ScreenAlreadyExistException.class)
 	public void addScreen_ScreenObjectGiven_IfScreenExist_throwScreenAlreadyExistException()
-			throws EmptyFieldException, ScreenAlreadyExistException {
+			throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		when(screenDAO.getScreenByName(any(String.class)))
 				.thenThrow(new ScreenAlreadyExistException("Screen Already exists"));
 		Screen screen = new Screen(1, "audi");
@@ -55,7 +57,7 @@ public class ScreenServiceImplTest {
 
 	@Test(expected = ScreenAlreadyExistException.class)
 	public void addScreen_ScreenObjectGiven_whenAlreadyHaveMoreThanThreeScreen_throwExceedCapacityException()
-			throws EmptyFieldException, ScreenAlreadyExistException {
+			throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		Screen screen = new Screen(1, "audi");
 		when(screenDAO.getAllScreen().size())
 				.thenThrow(new ScreenAlreadyExistException("Screen already Exist exception"));
@@ -63,7 +65,7 @@ public class ScreenServiceImplTest {
 	}
 
 	@Test
-	public void addScreen_ScreenObjectGiven_ShouldReturnOne() throws EmptyFieldException, ScreenAlreadyExistException {
+	public void addScreen_ScreenObjectGiven_ShouldReturnOne() throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		when(screenDAO.add(any(Screen.class))).thenReturn(1);
 		Screen screen = new Screen(1, "audi-1");
 		int rowAffected = screenService.add(screen);

@@ -1,5 +1,7 @@
 package com.yash.moviebookingsystem.serviceimpl;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 import com.yash.moviebookingsystem.dao.ScreenDAO;
@@ -31,26 +33,35 @@ public class ScreenServiceImpl implements ScreenService {
 	 *            object that will be added the object
 	 * @return rowAffected is the integer value return 1 when screen is added
 	 *         otherwise 0
+	 * @throws IOException 
 	 */
 	@Override
-	public int add(Screen screen) throws EmptyFieldException, ScreenAlreadyExistException {
+	public int add(Screen screen) throws EmptyFieldException, ScreenAlreadyExistException, IOException {
 		int rowAffected = 0;
-		if (screen == null) {
-			logger.error("Screen cannot be null");
-			throw new NullPointerException("Screen cannot be null");
-		}
-		if (screen.getScreenName() == "" || screen.getId() < 0) {
-			logger.error("Screen name/id cannot be empty");
-			throw new EmptyFieldException("Screen name/id cannot be empty");
-		}
-		if (screenDAO.getScreenByName(screen.getScreenName()) == "exists" || screenDAO.getAllScreen().size() >= 3) {
-			logger.error("Screen already exception");
-			throw new ScreenAlreadyExistException("Screen already exception");
-		}
+		isScreenNull(screen);
+		isScreenFieldEmpty(screen);
+//		if (screenDAO.getScreenByName(screen.getScreenName()) == "exists" || screenDAO.getAllScreen().size() >= 3) {
+//			logger.error("Screen already exception");
+//			throw new ScreenAlreadyExistException("Screen already exception");
+//		}
 		logger.info(" Screen service add has been called..");
 		screenDAO.add(screen);
 		rowAffected++;
 		return rowAffected;
+	}
+
+	private void isScreenFieldEmpty(Screen screen) throws EmptyFieldException {
+		if (screen.getScreenName() == "" || screen.getId() < 0) {
+			logger.error("Screen name/id cannot be empty");
+			throw new EmptyFieldException("Screen name/id cannot be empty");
+		}
+	}
+
+	private void isScreenNull(Screen screen) {
+		if (screen == null) {
+			logger.error("Screen cannot be null");
+			throw new NullPointerException("Screen cannot be null");
+		}
 	}
 
 }
